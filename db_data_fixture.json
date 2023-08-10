@@ -1,0 +1,215 @@
+[
+    {"model": "theatre.genre", "pk": 1, "fields": {"name": "Tragedy"}},
+    {"model": "theatre.genre", "pk": 2, "fields": {"name": "Comedy"}},
+    {"model": "theatre.genre", "pk": 3, "fields": {"name": "Drama"}},
+    {"model": "theatre.genre", "pk": 4, "fields": {"name": "Tragicomedy"}},
+    {"model": "theatre.genre", "pk": 5, "fields": {"name": "Historical Drama"}},
+    {"model": "theatre.genre", "pk": 6, "fields": {"name": "Musical"}},
+    {"model": "theatre.genre", "pk": 7, "fields": {"name": "Farce"}},
+    {"model": "theatre.genre", "pk": 8, "fields": {"name": "Mystery Play"}},
+    {"model": "theatre.genre", "pk": 9, "fields": {"name": "Melodrama"}},
+    {
+        "model": "theatre.actor",
+        "pk": 2,
+        "fields": {"first_name": "Laurence", "last_name": "Olivier"}
+    },
+    {
+        "model": "theatre.actor",
+        "pk": 3,
+        "fields": {"first_name": "Judi", "last_name": "Dench"}
+    },
+    {
+        "model": "theatre.actor",
+        "pk": 4,
+        "fields": {"first_name": "Ian", "last_name": "McKellen"}
+    },
+    {
+        "model": "theatre.actor",
+        "pk": 5,
+        "fields": {"first_name": "Maggie", "last_name": "Smith"}
+    },
+    {
+        "model": "theatre.actor",
+        "pk": 6,
+        "fields": {"first_name": "Patrick", "last_name": "Stewart"}
+    },
+    {
+        "model": "theatre.actor",
+        "pk": 7,
+        "fields": {"first_name": "Helen", "last_name": "Mirren"}
+    },
+    {
+        "model": "theatre.actor",
+        "pk": 8,
+        "fields": {"first_name": "John", "last_name": "Gielgud"}
+    },
+    {
+        "model": "theatre.actor",
+        "pk": 9,
+        "fields": {"first_name": "Anthony", "last_name": "Hopkins"}
+    },
+    {
+        "model": "theatre.actor",
+        "pk": 10,
+        "fields": {"first_name": "Vanessa", "last_name": "Redgrave"}
+    },
+    {
+        "model": "theatre.actor",
+        "pk": 11,
+        "fields": {"first_name": "Daniel", "last_name": "Day-Lewis"}
+    },
+    {
+        "model": "theatre.play",
+        "pk": 2,
+        "fields": {
+            "title": "Hamlet",
+            "description": "A tragedy by William Shakespeare where Prince Hamlet of Denmark seeks revenge for his father's murder while navigating a web of deceit and political intrigue.",
+            "image": "",
+            "genres": [3, 1],
+            "actors": [4, 6, 9]
+        }
+    },
+    {
+        "model": "theatre.play",
+        "pk": 3,
+        "fields": {
+            "title": "A Streetcar Named Desire",
+            "description": "A drama by Tennessee Williams that follows the life of Blanche DuBois as she moves in with her sister and her struggles with mental health, relationships, and reality.",
+            "image": "uploads/plays/a-streetcar-named-desire-8546c68f-18a5-46d4-9338-042d8660093a.jpg",
+            "genres": [3, 1],
+            "actors": [5, 9, 10]
+        }
+    },
+    {
+        "model": "theatre.play",
+        "pk": 4,
+        "fields": {
+            "title": "The Importance of Being Earnest",
+            "description": "A comedy by Oscar Wilde that satirizes Victorian social norms and follows two friends who create fictional personas to escape their obligations.",
+            "image": "",
+            "genres": [2],
+            "actors": [2, 3, 7]
+        }
+    },
+    {
+        "model": "theatre.play",
+        "pk": 5,
+        "fields": {
+            "title": "King Lear",
+            "description": "A tragedy by William Shakespeare about King Lear's descent into madness after dividing his kingdom among his daughters, leading to betrayal and tragedy.",
+            "image": "",
+            "genres": [3, 1],
+            "actors": [4, 8, 10]
+        }
+    },
+    {
+        "model": "theatre.play",
+        "pk": 6,
+        "fields": {
+            "title": "Macbeth",
+            "description": "A tragedy by William Shakespeare that tells the story of Macbeth's rise to power through murder and his subsequent downfall driven by guilt and paranoia.",
+            "image": "uploads/plays/macbeth-66ae7b9c-8c53-4a56-b8e3-d85f33a80198.jpg",
+            "genres": [3, 1],
+            "actors": [2, 5, 9]
+        }
+    },
+    {
+        "model": "theatre.theatrehall",
+        "pk": 1,
+        "fields": {"name": "The Royal Theatre", "rows": 15, "seats_in_row": 20}
+    },
+    {
+        "model": "theatre.theatrehall",
+        "pk": 2,
+        "fields": {"name": "The Grand Playhouse", "rows": 20, "seats_in_row": 25}
+    },
+    {
+        "model": "theatre.theatrehall",
+        "pk": 3,
+        "fields": {"name": "The Globe Theater", "rows": 25, "seats_in_row": 30}
+    },
+    {
+        "model": "theatre.theatrehall",
+        "pk": 4,
+        "fields": {"name": "The Majestic Hall", "rows": 18, "seats_in_row": 22}
+    },
+    {
+        "model": "theatre.theatrehall",
+        "pk": 5,
+        "fields": {"name": "The Velvet Auditorium", "rows": 22, "seats_in_row": 18}
+    },
+    {
+        "model": "theatre.theatrehall",
+        "pk": 6,
+        "fields": {"name": "The Crystal Pavilion", "rows": 30, "seats_in_row": 35}
+    },
+    {
+        "model": "theatre.performance",
+        "pk": 1,
+        "fields": {"play": 6, "theatre_hall": 2, "show_time": "2023-08-31T14:58:00Z"}
+    },
+    {
+        "model": "theatre.performance",
+        "pk": 4,
+        "fields": {"play": 3, "theatre_hall": 2, "show_time": "2023-08-25T18:47:00Z"}
+    },
+    {
+        "model": "theatre.performance",
+        "pk": 5,
+        "fields": {"play": 4, "theatre_hall": 5, "show_time": "2023-09-15T21:00:00Z"}
+    },
+    {
+        "model": "theatre.reservation",
+        "pk": 3,
+        "fields": {"created_at": "2023-08-10T16:00:54.299Z", "user": 1}
+    },
+    {
+        "model": "theatre.reservation",
+        "pk": 4,
+        "fields": {"created_at": "2023-08-10T16:01:03.430Z", "user": 2}
+    },
+    {
+        "model": "theatre.ticket",
+        "pk": 1,
+        "fields": {"row": 20, "seat": 15, "performance": 5, "reservation": 4}
+    },
+    {
+        "model": "theatre.ticket",
+        "pk": 2,
+        "fields": {"row": 15, "seat": 10, "performance": 5, "reservation": 4}
+    },
+    {
+        "model": "user.user",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$600000$xtlXvXSpWu8qPuTveo1F4a$f3hD8IdstyD2T8RwKeMK1smPHHlA+/q8oga2SgwmHSo=",
+            "last_login": "2023-08-10T15:58:34.334Z",
+            "is_superuser": true,
+            "first_name": "",
+            "last_name": "",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2023-08-09T22:10:11.780Z",
+            "email": "admin1@test.com",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "user.user",
+        "pk": 2,
+        "fields": {
+            "password": "pbkdf2_sha256$600000$DOCce1dvmM66GnDrLbRQuX$XQwCA/TYpNZQuay0oSzEVX/jVHqAKp0hsVCBp0uBn3A=",
+            "last_login": null,
+            "is_superuser": false,
+            "first_name": "",
+            "last_name": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-08-10T15:19:26.887Z",
+            "email": "user1@test.com",
+            "groups": [],
+            "user_permissions": []
+        }
+    }
+]
