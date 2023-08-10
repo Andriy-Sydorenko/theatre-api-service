@@ -182,14 +182,15 @@ class ReservationPagination(PageNumberPagination):
 
 class ReservationViewSet(viewsets.ModelViewSet):
     queryset = Reservation.objects.prefetch_related(
-        "tickets__performance__play", "tickets__performance__theatre_hall"
+        "tickets__performance__play",
+        "tickets__performance__theatre_hall",
     )
     serializer_class = ReservationSerializer
     pagination_class = ReservationPagination
     permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
-        return Reservation.objects.filter(user=self.request.user)
+        return super().get_queryset().filter(user=self.request.user)
 
     def get_serializer_class(self):
         if self.action == "list":
