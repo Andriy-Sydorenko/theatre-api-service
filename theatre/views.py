@@ -1,13 +1,12 @@
 from datetime import datetime
 
 from django.db.models import F, Count
-from django.shortcuts import render
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from theatre.models import (
@@ -18,6 +17,7 @@ from theatre.models import (
     Performance,
     Reservation,
 )
+from theatre.permissions import IsAdminOrIfAuthenticatedReadOnly
 from theatre.serializers import (
     GenreSerializer,
     ActorSerializer,
@@ -37,21 +37,25 @@ from theatre.serializers import (
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
 
 
 class ActorViewSet(viewsets.ModelViewSet):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
 
 
 class TheatreHallViewSet(viewsets.ModelViewSet):
     queryset = TheatreHall.objects.all()
     serializer_class = TheatreHallSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
 
 
 class PlayViewSet(viewsets.ModelViewSet):
     queryset = Play.objects.all().prefetch_related("genres", "actors")
     serializer_class = PlaySerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
 
     @staticmethod
     def _params_to_ints(qs):
@@ -123,17 +127,13 @@ class PlayViewSet(viewsets.ModelViewSet):
 
 
 class PerformanceViewSet(viewsets.ModelViewSet):
-    queryset = (
-        Performance.objects
-        .select_related("play", "theatre_hall")
-        .annotate(
-            tickets_available=(
-                F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
-                - Count("tickets")
-            )
+    queryset = Performance.objects.select_related("play", "theatre_hall").annotate(
+        tickets_available=(
+            F("theatre_hall__rows") * F("theatre_hall__seats_in_row") - Count("tickets")
         )
     )
     serializer_class = PerformanceSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
 
     def get_queryset(self):
         date = self.request.query_params.get("date")
@@ -162,14 +162,13 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "date",
                 type=datetime,
-                description="Filter by date (e.g. ?date=2024-10-08)"
+                description="Filter by date (e.g. ?date=2024-10-08)",
             ),
             OpenApiParameter(
                 "play",
                 type={"type": "list", "items": {"type": "number"}},
-                description="Filter by play id (e.g. ?movie=1,2,5)"
+                description="Filter by play id (e.g. ?movie=1,2,5)",
             ),
-
         ]
     )
     def list(self, request, *args, **kwargs):
@@ -187,6 +186,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
     )
     serializer_class = ReservationSerializer
     pagination_class = ReservationPagination
+    permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         return Reservation.objects.filter(user=self.request.user)
