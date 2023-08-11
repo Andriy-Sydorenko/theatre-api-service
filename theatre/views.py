@@ -33,34 +33,36 @@ from theatre.serializers import (
     PlayImageSerializer,
 )
 
-from theatre.documentation import (play_doc_params,
-                                   play_doc_examples,
-                                   performance_doc_parameters,
-                                   performance_doc_examples,)
+from theatre.documentation import (
+    play_doc_params,
+    play_doc_examples,
+    performance_doc_parameters,
+    performance_doc_examples,
+)
 
 
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class ActorViewSet(viewsets.ModelViewSet):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class TheatreHallViewSet(viewsets.ModelViewSet):
     queryset = TheatreHall.objects.all()
     serializer_class = TheatreHallSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class PlayViewSet(viewsets.ModelViewSet):
     queryset = Play.objects.all().prefetch_related("genres", "actors")
     serializer_class = PlaySerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     @staticmethod
     def _params_to_ints(qs):
@@ -108,19 +110,22 @@ class PlayViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(parameters=play_doc_params, examples=play_doc_examples)
+    @extend_schema(parameters=play_doc_params,
+                   examples=play_doc_examples)
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
 
 class PerformanceViewSet(viewsets.ModelViewSet):
-    queryset = Performance.objects.select_related("play", "theatre_hall").annotate(
-        tickets_available=(
-            F("theatre_hall__rows") * F("theatre_hall__seats_in_row") - Count("tickets")
+    queryset = (
+        Performance.objects.select_related("play", "theatre_hall")
+        .annotate(tickets_available=(
+            F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
+            - Count("tickets"))
         )
     )
     serializer_class = PerformanceSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly, )
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_queryset(self):
         date = self.request.query_params.get("date")
@@ -144,7 +149,10 @@ class PerformanceViewSet(viewsets.ModelViewSet):
 
         return PerformanceSerializer
 
-    @extend_schema(parameters=performance_doc_parameters, examples=performance_doc_examples)
+    @extend_schema(
+        parameters=performance_doc_parameters,
+        examples=performance_doc_examples
+    )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
@@ -161,7 +169,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
     )
     serializer_class = ReservationSerializer
     pagination_class = ReservationPagination
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
