@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.db.models import F, Count
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema
 
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -32,6 +32,11 @@ from theatre.serializers import (
     ReservationListSerializer,
     PlayImageSerializer,
 )
+
+from theatre.documentation import (play_doc_params,
+                                   play_doc_examples,
+                                   performance_doc_parameters,
+                                   performance_doc_examples,)
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -103,25 +108,7 @@ class PlayViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                "title",
-                type=str,
-                description="Filter by title name (e.g. ?title=name_of_the_play)",
-            ),
-            OpenApiParameter(
-                "genres",
-                type={"type": "list", "items": {"type": "number"}},
-                description="Filter by genre id (e.g. ?genres=1,2,5)",
-            ),
-            OpenApiParameter(
-                "actors",
-                type={"type": "list", "items": {"type": "number"}},
-                description="Filter by actor id (e.g. ?actors=1,2,5)",
-            ),
-        ]
-    )
+    @extend_schema(parameters=play_doc_params, examples=play_doc_examples)
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
@@ -137,14 +124,14 @@ class PerformanceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         date = self.request.query_params.get("date")
-        play_id_str = self.request.query_params.get("play")
+        play = self.request.query_params.get("play")
 
         queryset = self.queryset
         if date:
             date = datetime.strptime(date, "%Y-%m-%d").date()
             queryset = queryset.filter(show_time__date=date)
-        if play_id_str:
-            queryset = queryset.filter(play_id=int(play_id_str))
+        if play:
+            queryset = queryset.filter(play__title__icontains=play)
 
         return queryset
 
@@ -157,20 +144,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
 
         return PerformanceSerializer
 
-    @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                "date",
-                type=datetime,
-                description="Filter by date (e.g. ?date=2024-10-08)",
-            ),
-            OpenApiParameter(
-                "play",
-                type={"type": "list", "items": {"type": "number"}},
-                description="Filter by play id (e.g. ?movie=1,2,5)",
-            ),
-        ]
-    )
+    @extend_schema(parameters=performance_doc_parameters, examples=performance_doc_examples)
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
