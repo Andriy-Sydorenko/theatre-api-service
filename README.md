@@ -43,7 +43,7 @@ A quick introduction of the setup you need to get run a project.
     ```
 7. Load data to the db using this command:
    ```shell
-   python manage.py loaddata cinema_service_db_data.json
+   python manage.py loaddata theatre_service_db_data.json
    ```
 8. You can use this admin user:
    - Email: `admin.user@cinema.com`
