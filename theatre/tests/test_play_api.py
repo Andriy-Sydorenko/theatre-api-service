@@ -156,6 +156,14 @@ class PlayImageUploadTests(TestCase):
 
         self.assertIn("play_image", res.data[0].keys())
 
+    def test_create_play_permitted(self):
+        payload = {
+            "title": "Sample play",
+            "description": "Sample description",
+        }
+        response = self.client.post(PLAY_URL, payload)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
 
 class UnauthenticatedPlayApiTests(TestCase):
     def setUp(self) -> None:
@@ -213,7 +221,9 @@ class AuthenticatedPlayApiTests(TestCase):
         play1.genres.add(genre1)
         play2.genres.add(genre2)
 
-        response = self.client.get(PLAY_URL, {"genres": f"{genre1.id}, {genre2.id}"})
+        response = self.client.get(PLAY_URL, {
+            "genres": f"{genre1.id}, {genre2.id}"
+        })
 
         serializer1 = PlayListSerializer(play1)
         serializer2 = PlayListSerializer(play2)
@@ -262,7 +272,6 @@ class AuthenticatedPlayApiTests(TestCase):
         payload = {
             "title": "Sample play",
             "description": "Sample description",
-
         }
         response = self.client.post(PLAY_URL, payload)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

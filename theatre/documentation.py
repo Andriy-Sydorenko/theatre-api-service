@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiExample
 
 
@@ -42,7 +43,7 @@ play_doc_examples = [
 performance_doc_parameters = [
     OpenApiParameter(
         "date",
-        type=datetime,
+        type=OpenApiTypes.DATE,
         description="Filter by date (e.g. ?date=2024-10-08)",
     ),
     OpenApiParameter(

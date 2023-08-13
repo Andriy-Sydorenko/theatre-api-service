@@ -44,6 +44,14 @@ def sample_performance(**params):
 
     return Performance.objects.create(**defaults)
 
+def get_performances():
+    return Performance.objects.all().annotate(
+        tickets_available=(
+            F("theatre_hall__rows")
+            * F("theatre_hall__seats_in_row")
+            - Count("tickets")
+        )
+    )
 
 def detail_url(performance_id):
     return reverse("theatre:performance-detail", args=[performance_id])
@@ -67,16 +75,6 @@ class AuthenticatedPlayApiTests(TestCase):
         )
         self.client.force_authenticate(self.user)
 
-    @staticmethod
-    def get_performances():
-        return Performance.objects.all().annotate(
-            tickets_available=(
-                F("theatre_hall__rows")
-                * F("theatre_hall__seats_in_row")
-                - Count("tickets")
-            )
-        )
-
     def test_performances_list_access(self):
 
         sample_performance()
@@ -84,7 +82,7 @@ class AuthenticatedPlayApiTests(TestCase):
 
         response = self.client.get(PERFORMANCE_URL)
 
-        performances = self.get_performances()
+        performances = get_performances()
         serializer = PerformanceListSerializer(performances, many=True)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -100,7 +98,7 @@ class AuthenticatedPlayApiTests(TestCase):
         sample_performance(play=play3)
 
         response = self.client.get(PERFORMANCE_URL, {"play": "pl"})
-        performances = self.get_performances()
+        performances = get_performances()
         serializer = PerformanceListSerializer(performances, many=True)
 
         serializer1 = serializer.data[0]
@@ -117,7 +115,7 @@ class AuthenticatedPlayApiTests(TestCase):
         sample_performance(show_time="2023-07-08", )
 
         response = self.client.get(PERFORMANCE_URL, {"date": "2022-06-02"})
-        performances = self.get_performances()
+        performances = get_performances()
         serializer = PerformanceListSerializer(performances, many=True)
 
         serializer1 = serializer.data[0]
@@ -128,3 +126,46 @@ class AuthenticatedPlayApiTests(TestCase):
         self.assertIn(serializer2, response.data)
         self.assertNotIn(serializer3, response.data)
 
+    def test_create_play_forbidden(self):
+        payload = {
+            "play": "",
+            "theatre_hall": "",
+            "show_time": "2022-06-02",
+        }
+        response = self.client.post(PERFORMANCE_URL, payload)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class AdminPerformanceApiTests(TestCase):
+    def setUp(self) -> None:
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_superuser(
+            "admin@test.com",
+            "testpassword",
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_performance_list_admin_access(self):
+        sample_performance()
+        sample_performance()
+
+        response = self.client.get(PERFORMANCE_URL)
+
+        performances = get_performances()
+        serializer = PerformanceListSerializer(performances, many=True)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serializer.data)
+
+    def test_create_performance_permitted(self):
+        play = sample_play()
+        theatre_hall = TheatreHall.objects.create(
+            name="Test theatre", rows=20, seats_in_row=20
+        )
+        payload = {
+            "play": play.id,
+            "theatre_hall": theatre_hall.id,
+            "show_time": "2022-06-02",
+        }
+        response = self.client.post(PERFORMANCE_URL, payload)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

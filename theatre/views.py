@@ -151,7 +151,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         parameters=performance_doc_parameters,
-        examples=performance_doc_examples
+        examples=performance_doc_examples,
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -169,7 +169,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
     )
     serializer_class = ReservationSerializer
     pagination_class = ReservationPagination
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
