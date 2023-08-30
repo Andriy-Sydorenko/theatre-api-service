@@ -39,8 +39,8 @@ def play_image_file_path(instance, filename):
 class Play(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
-    genres = models.ManyToManyField(Genre, blank=True)
-    actors = models.ManyToManyField(Actor, blank=True)
+    genres = models.ManyToManyField(Genre, blank=True, related_name="plays")
+    actors = models.ManyToManyField(Actor, blank=True, related_name="plays")
     image = models.ImageField(null=True, upload_to=play_image_file_path)
 
     class Meta:
@@ -64,8 +64,8 @@ class TheatreHall(models.Model):
 
 
 class Performance(models.Model):
-    play = models.ForeignKey(Play, on_delete=models.CASCADE)
-    theatre_hall = models.ForeignKey(TheatreHall, on_delete=models.CASCADE)
+    play = models.ForeignKey(Play, related_name="performances", on_delete=models.CASCADE)
+    theatre_hall = models.ForeignKey(TheatreHall, related_name="performances", on_delete=models.CASCADE)
     show_time = models.DateTimeField()
 
     class Meta:
@@ -78,6 +78,7 @@ class Performance(models.Model):
 class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             related_name="Reservations",
                              on_delete=models.CASCADE)
 
     class Meta:
@@ -91,10 +92,10 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
     performance = models.ForeignKey(
-        Performance, on_delete=models.CASCADE, related_name="tickets"
+        Performance, related_name="tickets", on_delete=models.CASCADE
     )
     reservation = models.ForeignKey(
-        Reservation, on_delete=models.CASCADE, related_name="tickets"
+        Reservation, related_name="tickets", on_delete=models.CASCADE
     )
 
     @staticmethod
