@@ -1,0 +1,5 @@
+media
+venv
+.gitignore
+.env
+db.sqlite3

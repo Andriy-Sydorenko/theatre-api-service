@@ -13,50 +13,55 @@ Before you begin, make sure you have the following tools and technologies instal
 - Django REST framework
 
 ## Installing / Getting started
+> A quick introduction of the setup you need to get run a project.
 
-A quick introduction of the setup you need to get run a project.
-1. Fork a repo.
-2. Use this command ```git clone the-link-from-your-forked-repo```. 
-   - You can get the link by clicking the Clone or download button in your repo.
-3. Open the project folder in your IDE.
-4. Open a terminal in the project folder. 
-5. If you are using PyCharm - it may propose you to automatically create venv for your project and install requirements in it, but if not:
-    - For Windows:
-    ```shell
-    python -m venv venv
-    venv\Scripts\activate
-    pip install -r requirements.txt
-    ```
-   - For Mac OS:
-    ```shell
-    python -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-   ```
-6. Run create migration file, using 
-    ```shell
-    python manage.py makemigrations
-    ```
-    Then migrate file, using
-    ```shell
-    python manage.py migrate
-    ```
-7. Load data to the db using this command:
-   ```shell
-   python manage.py loaddata theatre_service_db_data.json
-   ```
-8. You can use this admin user:
-   - Email: `admin.user@cinema.com`
-   - Password: `1qazcde3`
+### Using Git
+1. Clone the repo:
+```shell
+git clone https://github.com/Andriy-Sydorenko/theatre-api-service
+```
+2. You can open project in IDE and configure .env file using [.env.sample](.env.sample) file as an example.
+<details>
+<summary>Parameters for .env file:</summary>
 
-   Or you can create superuser by yourself:
-      ```shell
-      python manage.py createsuperuser
-      ```
-9. Start the development server:
-   ```shell
-   python manage.py runserver
-   ```
+- **DJANGO_DEBUG**: `Set True if you want debug menu to be on, and False for debug menu to be off`
+- **DJANGO_SECRET_KEY**: `Your django secret key, you can generate one on https://djecrety.ir`
+- **POSTGRES_DB**: `Name of your DB`
+- **POSTGRES_DB_PORT**: `Port of your DB`
+- **POSTGRES_USER**: `Name of your user for DB`
+- **POSTGRES_PASSWORD**: `Your password in DB`
+- **POSTGRES_HOST** `Host of your DB`
+</details>
+
+3. Run docker-compose command to build and run containers:
+```shell
+docker-compose up --build
+```
+### Using Docker Hub
+1. Login into the Docker:
+```shell
+docker login
+```
+
+2. Pull the project:
+```shell
+docker pull andriysydorenko/theatre_api_service:latest
+```
+
+3. Run the containers:
+```shell
+docker-compose up
+```
+
+
+> To access browsable api, use http://localhost:8000/api/theatre/
+> 
+> To get access to the content, visit http://localhost:8000/api/user/token/ to get JWT token.
+> 
+> Use the following admin user:
+> - Email: admin1@test.com
+> - Password: defi4637
+
 ## API Endpoints
 
 <details>
@@ -147,5 +152,16 @@ A quick introduction of the setup you need to get run a project.
 - The API is documented using the OpenAPI standard.
 - Access the API documentation by running the server and navigating to http://localhost:8000/api/doc/swagger/ or http://localhost:8000/api/doc/redoc/.
 
+## DB Structure
+![db_structure.png](readme_images/db_structure.png)
+## Endpoints
+![img.png](readme_images/genre_list.png)
+![img_1.png](readme_images/actor_list.png)
+![img_2.png](readme_images/play_list.png)
+![img_3.png](readme_images/theatre_hall_list.png)
+![img_4.png](readme_images/performance_list.png)
+![img_5.png](readme_images/token_obtain.png)
+![img_6.png](readme_images/token_refresh.png)
+![img_8.png](readme_images/token_verify.png)
 ## License
 This project is licensed under the MIT License.
